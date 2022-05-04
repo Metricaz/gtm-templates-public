@@ -15,5 +15,5 @@
 homepage: "https://metricaz.com/"
 documentation: "https://metricaz.com/#contact"
 versions:
-  - sha: f5685c8f65086de819e72a8a9c83f7f736fc2bc6
+  - sha: 84443482acddc4784bb8053e4ee13de68d5c6cda
     changeNotes: Initial Version
