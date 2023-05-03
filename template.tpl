@@ -152,17 +152,17 @@ var vNameValue = getCookieValues(data.vName);
 
 if (typeof vNameValue == 'undefined' || vNameValue == ''){
    cookie(attribuition); 
-   //log('firt cookie');
+   log('firt cookie');
    return attribuition;
 }
 
 if(typeof attribuition != 'undefined' && attribuition != '__direct__' && attribuition != vNameValue) {
     cookie(attribuition);
-    //log('redefine cookie');
+    log('redefine cookie');
     return attribuition;
 }
 else {
-    //log('return cookie');
+    log('return cookie');
     var returnCookie = JSON.parse(vNameValue);
     return (typeof returnCookie === 'object')?returnCookie:vNameValue.toString();
 }
@@ -348,6 +348,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 03/05/2023, 14:08:02
+Created on 03/05/2023, 14:32:24
 
 
