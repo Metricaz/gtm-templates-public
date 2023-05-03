@@ -14,7 +14,6 @@ ___INFO___
   "version": 1,
   "securityGroups": [],
   "displayName": "Set Atribuition Params Persistent Cookie (by Metricaz)",
-  "categories": ["AFFILIATE_MARKETING", "ADVERTISING", "ATTRIBUTION"],
   "description": "Variable to set cookie persist of campaign information params and return itself in a session or in window attribution",
   "containerContexts": [
     "WEB"
@@ -349,6 +348,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 04/05/2022 13:18:25
+Created on 03/05/2023, 14:08:02
 
 
