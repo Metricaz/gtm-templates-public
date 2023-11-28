@@ -117,55 +117,69 @@ var cookie = function(value){
   setCookie(data.vName, value, {'path': '/', 'domain': data.defaultDomain, 'max-age': maxAge}, true);
 };
 
-var attr = function() {
+var attribuition = function() {
   var search = urlObject.searchParams;
-  var clids = searchKeys(search).filter(function(item) { if(item.indexOf('gclid') > -1){return item; } }); 
-  if (clids.length > 0) { return "google/cpc"; }
-  
+  var clids = searchKeys(search).filter(function(item) { if(item.indexOf('gclid') > -1){return item; } });
+  if (clids.length > 0) { return JSON.stringify({'utm_source':'google', 'utm_medium':'cpc'}); }
+
   var _utms = {};
   var utms = searchKeys(search).filter(function(item) { if(item.indexOf('utm') > -1){return _utms[item] = search[item]; } });
+
   if (utms.length > 0) { return JSON.stringify(_utms); }
 
   if (typeof(referrer) == 'undefined' || referrer == "") {
-    return '__direct__';
+    //log("referrer undefined"); // dlme
+    return JSON.stringify({'utm_source':'__direct__'});
   }
 
   if (referrer.indexOf('yahoo') > -1 || referrer.indexOf('google') > -1 || referrer.indexOf('bing') > -1){
-    return '__organic__';
+    //log("referrer is search engine"); // dlme
+    return JSON.stringify({'utm_source':'__organic__'});
   }
 
-  if (referrer.indexOf('facebook') > -1 || referrer.indexOf('instagram') > -1 || referrer.indexOf('twitter') > -1){
-    return '__social__';
+  if (referrer.indexOf('facebook') > -1 || referrer.indexOf('instagram') > -1 || referrer.indexOf('twitter') > -1 || referrer.indexOf('tiktok') > -1){
+    //log("referrer is social media"); // dlme
+    return  JSON.stringify({'utm_source':'__social__'});
   }
 
   if (referrer.indexOf(data.defaultDomain > 0)){
+    //log("defaultdomain is present");//dlme
     return;
   }
 
   referrer = referrer.replace('http://','');
   referrer = referrer.replace('https://','');
-  return "referrer/" + referrer;
-};
+  return JSON.stringify({'utm_source':'referrer/'+ referrer});
+}();
 
-var attribuition = attr();
+attribuition = JSON.parse(attribuition);
+//log("Attribuition variable"); //dlme
+//log(attribuition);//dlme
+
 var vNameValue = getCookieValues(data.vName);
+//log("vNameValue:");//dlme
+//log(vNameValue);//dlme
+vNameValue =  JSON.parse(vNameValue);
 
-if (typeof vNameValue == 'undefined' || vNameValue == ''){
-   cookie(attribuition); 
-   log('firt cookie');
+if (typeof vNameValue == 'undefined' || vNameValue == '' || !vNameValue || vNameValue.utm_source == '' && (typeof attribuition !== 'undefined')){
+   cookie(JSON.stringify(attribuition));
+   //log('first cookie'); //dlme
    return attribuition;
 }
 
-if(typeof attribuition != 'undefined' && attribuition != '__direct__' && attribuition != vNameValue) {
-    cookie(attribuition);
-    log('redefine cookie');
+if(typeof attribuition != 'undefined' && attribuition.utm_source != '__direct__' && attribuition.utm_source != vNameValue.utm_source) {
+    cookie(JSON.stringify(attribuition));
+    //log('redefine cookie');
     return attribuition;
 }
 else {
-    log('return cookie');
-    var returnCookie = JSON.parse(vNameValue);
-    return (typeof returnCookie === 'object')?returnCookie:vNameValue.toString();
+  if(vNameValue != '' || vNameValue.utm_source != ''){
+    return vNameValue;
+  }
+  //log('return cookie');
+  return {'utm_source':vNameValue.utm_source + '/'+ attribuition.utm_source};
 }
+return {'utm_source':vNameValue.utm_source + '/'+ attribuition.utm_source};
 
 
 ___WEB_PERMISSIONS___
@@ -348,6 +362,4 @@ scenarios: []
 
 ___NOTES___
 
-Created on 03/05/2023, 14:32:24
-
-
+Created on 03/05/2023, 14:08:02
