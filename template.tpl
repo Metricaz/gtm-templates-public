@@ -120,10 +120,17 @@ var cookie = function(value){
 var attribuition = function() {
   var search = urlObject.searchParams;
   var clids = searchKeys(search).filter(function(item) { if(item.indexOf('gclid') > -1){return item; } });
-  if (clids.length > 0) { return JSON.stringify({'utm_source':'google', 'utm_medium':'cpc'}); }
+  if (clids.length > 0) {
+    //log("gclid is google cpc");
+    return JSON.stringify({'utm_source':'google', 'utm_medium':'cpc'});
+  }
 
   var _utms = {};
-  var utms = searchKeys(search).filter(function(item) { if(item.indexOf('utm') > -1){return _utms[item] = search[item]; } });
+  var utms = searchKeys(search).filter(function(item) {
+    if(item.indexOf('utm') > -1){
+      return _utms[item] = search[item];
+    }
+  });
 
   if (utms.length > 0) { return JSON.stringify(_utms); }
 
@@ -132,12 +139,12 @@ var attribuition = function() {
     return JSON.stringify({'utm_source':'__direct__'});
   }
 
-  if (referrer.indexOf('yahoo') > -1 || referrer.indexOf('google') > -1 || referrer.indexOf('bing') > -1){
+  if (referrer.indexOf('yahoo.com') > -1 || referrer.indexOf('google.com') > -1 || referrer.indexOf('bing.com') > -1){
     //log("referrer is search engine"); // dlme
     return JSON.stringify({'utm_source':'__organic__'});
   }
 
-  if (referrer.indexOf('facebook') > -1 || referrer.indexOf('instagram') > -1 || referrer.indexOf('twitter') > -1 || referrer.indexOf('tiktok') > -1){
+  if (referrer.indexOf('facebook.com') > -1 || referrer.indexOf('instagram.com') > -1 || referrer.indexOf('twitter.com') > -1 || referrer.indexOf('tiktok.com') > -1){
     //log("referrer is social media"); // dlme
     return  JSON.stringify({'utm_source':'__social__'});
   }
