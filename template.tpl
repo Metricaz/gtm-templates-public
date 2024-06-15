@@ -90,14 +90,13 @@ ___TEMPLATE_PARAMETERS___
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
 const log = require('logToConsole');
-const JSON = require('JSON');
+const JSONZ = require('JSON');
 const queryPermission = require('queryPermission');
 const getReferrerUrl = require('getReferrerUrl');
 const getUrl = require('getUrl');
 const getCookieValues = require('getCookieValues');
 const setCookie = require('setCookie');
 const getQueryParameters = require('getQueryParameters');
-const decodeUriComponent = require('decodeUriComponent');
 const parseUrl = require('parseUrl');
 
 var referrer  = getReferrerUrl(undefined);
@@ -114,79 +113,72 @@ var searchKeys = function(obj){
 
 var cookie = function(value){
   var maxAge = (data.cookieExpDays)?60*60*24*data.cookieExpDays:'';
-  setCookie(data.vName, value, {'path': '/', 'domain': data.defaultDomain, 'max-age': maxAge}, true);
+  setCookie(data.vName, value, {path: '/', domain: data.defaultDomain, 'max-age': maxAge}, true);
 };
 
 var attribuition = function() {
   var search = urlObject.searchParams;
   var clids = searchKeys(search).filter(function(item) { if(item.indexOf('gclid') > -1){return item; } });
   if (clids.length > 0) {
-    //log("gclid is google cpc");
-    return JSON.stringify({'utm_source':'google', 'utm_medium':'cpc'});
+    return JSONZ.stringify({utm_source:'google', utm_medium:'cpc'});
   }
 
   var _utms = {};
   var utms = searchKeys(search).filter(function(item) {
     if(item.indexOf('utm') > -1){
-      return _utms[item] = search[item];
+      var r =  _utms[item] = search[item];
+      return r;
     }
   });
 
-  if (utms.length > 0) { return JSON.stringify(_utms); }
+  if (utms.length > 0) { return JSONZ.stringify(_utms); }
 
   if (typeof(referrer) == 'undefined' || referrer == "") {
-    //log("referrer undefined"); // dlme
-    return JSON.stringify({'utm_source':'__direct__'});
+    return JSONZ.stringify({utm_source:'__direct__'});
   }
 
-  if (referrer.indexOf('yahoo.com') > -1 || referrer.indexOf('google.com') > -1 || referrer.indexOf('bing.com') > -1){
-    //log("referrer is search engine"); // dlme
-    return JSON.stringify({'utm_source':'__organic__'});
+  if (referrer.indexOf('yahoo.com') > - 1 || referrer.indexOf('google.com') > -1 || referrer.indexOf('bing.com') > -1){
+    return JSONZ.stringify({utm_source:'__organic__'});
   }
 
   if (referrer.indexOf('facebook.com') > -1 || referrer.indexOf('instagram.com') > -1 || referrer.indexOf('twitter.com') > -1 || referrer.indexOf('tiktok.com') > -1){
-    //log("referrer is social media"); // dlme
-    return  JSON.stringify({'utm_source':'__social__'});
+    return  JSONZ.stringify({utm_source:'__social__'});
   }
-
-  if (referrer.indexOf(data.defaultDomain > 0)){
-    //log("defaultdomain is present");//dlme
+  if (referrer.indexOf(data.defaultDomain) > -1){
     return;
   }
 
   referrer = referrer.replace('http://','');
   referrer = referrer.replace('https://','');
-  return JSON.stringify({'utm_source':'referrer/'+ referrer});
+  return JSONZ.stringify({utm_source:'referrer/'+ referrer});
 }();
 
-attribuition = JSON.parse(attribuition);
-//log("Attribuition variable"); //dlme
-//log(attribuition);//dlme
+if(typeof attribuition !== 'undefined' && attribuition.indexOf('utm_source') > -1){
+  attribuition = JSONZ.parse(attribuition);
+  log(attribuition);
+}
 
-var vNameValue = getCookieValues(data.vName);
-//log("vNameValue:");//dlme
-//log(vNameValue);//dlme
-vNameValue =  JSON.parse(vNameValue);
+var vNameValue = getCookieValues(data.vName)[0];
+if(typeof vNameValue !== 'undefined' && vNameValue.indexOf('utm_source') > -1){
+  vNameValue =  JSONZ.parse(vNameValue);
+}
 
 if (typeof vNameValue == 'undefined' || vNameValue == '' || !vNameValue || vNameValue.utm_source == '' && (typeof attribuition !== 'undefined')){
-   cookie(JSON.stringify(attribuition));
-   //log('first cookie'); //dlme
+   log(attribuition);
    return attribuition;
 }
 
 if(typeof attribuition != 'undefined' && attribuition.utm_source != '__direct__' && attribuition.utm_source != vNameValue.utm_source) {
-    cookie(JSON.stringify(attribuition));
-    //log('redefine cookie');
+    log(attribuition);
     return attribuition;
 }
 else {
   if(vNameValue != '' || vNameValue.utm_source != ''){
     return vNameValue;
   }
-  //log('return cookie');
-  return {'utm_source':vNameValue.utm_source + '/'+ attribuition.utm_source};
+  return {utm_source: vNameValue.utm_source + '/'+ attribuition.utm_source};
 }
-return {'utm_source':vNameValue.utm_source + '/'+ attribuition.utm_source};
+return {utm_source: vNameValue.utm_source + '/'+ attribuition.utm_source};
 
 
 ___WEB_PERMISSIONS___
@@ -364,7 +356,129 @@ ___WEB_PERMISSIONS___
 
 ___TESTS___
 
-scenarios: []
+scenarios:
+- name: Test Return Direct
+  code: |
+    mock('getUrl', component => {
+          return url;
+        });
+    const test = runCode(mockData);
+    assertApi('getUrl').wasCalled();
+    assertThat(test).isDefined();
+    assertThat(test.utm_source).contains('__direct');
+- name: Test Return Google CPC
+  code: |-
+    url = 'https://www.example.com/path/?gclid=123123123123123123123#home';
+    mock('getUrl', component => {
+          return url;
+        });
+    const test = runCode(mockData);
+    assertApi('getUrl').wasCalled();
+    assertThat(test).isDefined();
+    assertThat(test.utm_source).isEqualTo('google');
+    assertThat(test.utm_medium).isEqualTo('cpc');
+- name: Test Return UTM Mannually
+  code: |
+    url = 'https://www.example.com/path/?utm_source=test&utm_medium=test2#home';
+    mock('getUrl', component => {
+          return url;
+        });
+    const test = runCode(mockData);
+    assertApi('getUrl').wasCalled();
+    assertThat(test).isDefined();
+    assertThat(test.utm_source).isEqualTo('test');
+    assertThat(test.utm_medium).isEqualTo('test2');
+- name: Test Return Social
+  code: |-
+    url = 'https://www.example.com/path/#home';
+    mock('getUrl', component => {
+          return url;
+        });
+    const referrer = 'https://www.facebook.com/';
+    mock('getReferrerUrl', component => {
+          return referrer;
+        });
+
+    const test = runCode(mockData);
+    assertApi('getUrl').wasCalled();
+    assertApi('getReferrerUrl').wasCalled();
+    assertThat(test).isDefined();
+    assertThat(test.utm_source).contains('__social');
+- name: Test Return Organic
+  code: |
+    url = 'https://www.example.com/path/#home';
+    mock('getUrl', component => {
+          return url;
+        });
+
+    const referrer = 'https://www.google.com/';
+    mock('getReferrerUrl', component => {
+          return referrer;
+        });
+
+    const test = runCode(mockData);
+    assertApi('getUrl').wasCalled();
+    assertApi('getReferrerUrl').wasCalled();
+    assertThat(test).isDefined();
+    assertThat(test.utm_source).contains('__organic');
+- name: Test Return External Referrer
+  code: |
+    url = 'https://www.example.com/path/#home';
+    mock('getUrl', component => {
+          return url;
+        });
+
+    const referrer = 'https://www.previous.com/';
+    mock('getReferrerUrl', component => {
+          return referrer;
+        });
+
+    const test = runCode(mockData);
+    assertApi('getUrl').wasCalled();
+    assertApi('getReferrerUrl').wasCalled();
+    assertThat(test).isDefined();
+    assertThat(test.utm_source).contains('referrer');
+- name: Test Return Internal Referrer
+  code: |
+    url = 'https://www.example.com/path/#home';
+    mock('getUrl', component => {
+          return url;
+        });
+
+    const referrer = 'https://www.example.com/path/#about';
+    mock('getReferrerUrl', component => {
+          return referrer;
+        });
+
+    const test = runCode(mockData);
+    assertApi('getUrl').wasCalled();
+    assertApi('getReferrerUrl').wasCalled();
+    assertThat(test).isUndefined();
+- name: Test SetCookie Value
+  code: |-
+    mock('getUrl', component => {
+      return url;
+    });
+    let val = '';
+    mock('setCookie', (name, value, options) => {
+      if (name !== mockData.vName) fail('Cookie name not set');
+      if (options['max-age'] !== 60*60*24*mockData.cookieExpDays) fail('Cookie expire days not set');
+      if (options.domain !== mockData.defaultDomain) fail('Cookie domain not set');
+      val = value;
+    });
+
+    const test = runCode(mockData);
+
+    assertApi('setCookie').wasCalled();
+    assertThat(test).isDefined();
+    assertThat(test.utm_source).contains('__direct');
+setup: |-
+  const mockData = {
+    defaultDomain: '.example.com',
+    vName:'origemMTZ',
+    cookieExpDays: '30'
+  };
+  let url = 'https://www.example.com/path/#home';
 
 
 ___NOTES___
