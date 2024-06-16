@@ -16,20 +16,22 @@ homepage: "https://metricaz.com/"
 documentation: "https://metricaz.com/contato/"
 versions:
 # Latest version
+  - sha: 9e35f9e1fa2d938d7972fa6374874e73d333fb39
+    changeNotes: Update 9 - Adjust field domain error
+# Older versions
   - sha: cd809a1d054a8ef876c5cbe5bac70b0f8b842c77
     changeNotes: Update 8 - Upgrade logics and unit tests included
-# Older versions
   - sha: 8e45ca940f8b7ac28b69b6e460171e0b32374e60
-    changeNotes: Atualização 7
+    changeNotes: Update 7
   - sha: 4d3a6013569f5b0c972d884f820b01e54dbb64a9
-    changeNotes: Atualização 6
+    changeNotes: Update 6
   - sha: 725a9ea9707eb370c550c220727f0ef8f80f6aa9
-    changeNotes: Atualização 5
+    changeNotes: Update 5
   - sha: 54cfc88cea51c93c4f3f92d65b821d33de6db3de
-    changeNotes: Atualização 4
+    changeNotes: Update 4
   - sha: f84f25f4c8ecc1712ccf433fb5a74b7e292a08d4
-    changeNotes: Atualização 3
+    changeNotes: Update 3
   - sha: c49a667281e2b142e7404641408bad18e28780af
-    changeNotes: Atualização 2
+    changeNotes: Update 2
   - sha: 84443482acddc4784bb8053e4ee13de68d5c6cda
     changeNotes: Initial Version
