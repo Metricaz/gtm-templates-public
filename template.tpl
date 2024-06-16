@@ -158,12 +158,12 @@ if(typeof vNameValue !== 'undefined' && vNameValue.indexOf('utm_source') > -1){
 }
 
 if (typeof vNameValue == 'undefined' || vNameValue == '' || !vNameValue || vNameValue.utm_source == '' && (typeof attribuition !== 'undefined')){
-   log(attribuition);
+   cookie(JSONZ.stringify(attribuition));
    return attribuition;
 }
 
 if(typeof attribuition != 'undefined' && attribuition.utm_source != '__direct__' && attribuition.utm_source != vNameValue.utm_source) {
-    log(attribuition);
+    cookie(JSONZ.stringify(attribuition));
     return attribuition;
 }
 else {
