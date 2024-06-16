@@ -16,7 +16,7 @@ homepage: "https://metricaz.com/"
 documentation: "https://metricaz.com/contato/"
 versions:
 # Latest version
-  - sha: 0bb788562def759df1ea9cc1b91b9543aa1cd879
+  - sha: cd809a1d054a8ef876c5cbe5bac70b0f8b842c77
     changeNotes: Update 8 - Upgrade logics and unit tests included
 # Older versions
   - sha: 8e45ca940f8b7ac28b69b6e460171e0b32374e60
