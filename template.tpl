@@ -62,12 +62,6 @@ ___TEMPLATE_PARAMETERS___
     "valueValidators": [
       {
         "type": "NON_EMPTY"
-      },
-      {
-        "type": "STRING_LENGTH",
-        "args": [
-          2
-        ]
       }
     ]
   },
