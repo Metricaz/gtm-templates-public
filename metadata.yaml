@@ -16,9 +16,11 @@ homepage: "https://metricaz.com/"
 documentation: "https://metricaz.com/contato/"
 versions:
 # Latest version
+  - sha: d8fce0628105d4b98a724384d09f10c9fd9a3559
+    changeNotes: Update 10 - Stable version and adjust cookie create
+# Older versions
   - sha: 9e35f9e1fa2d938d7972fa6374874e73d333fb39
     changeNotes: Update 9 - Adjust field domain error
-# Older versions
   - sha: cd809a1d054a8ef876c5cbe5bac70b0f8b842c77
     changeNotes: Update 8 - Upgrade logics and unit tests included
   - sha: 8e45ca940f8b7ac28b69b6e460171e0b32374e60
