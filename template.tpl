@@ -91,7 +91,6 @@ const getCookieValues = require('getCookieValues');
 const setCookie = require('setCookie');
 const getQueryParameters = require('getQueryParameters');
 const parseUrl = require('parseUrl');
-
 var referrer  = getReferrerUrl(undefined);
 var url = getUrl(undefined);
 var  urlObject = parseUrl(url);
