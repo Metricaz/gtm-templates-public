@@ -83,7 +83,6 @@ ___TEMPLATE_PARAMETERS___
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
-const log = require('logToConsole');
 const JSONZ = require('JSON');
 const queryPermission = require('queryPermission');
 const getReferrerUrl = require('getReferrerUrl');
@@ -149,7 +148,6 @@ var attribuition = function() {
 
 if(typeof attribuition !== 'undefined' && attribuition.indexOf('utm_source') > -1){
   attribuition = JSONZ.parse(attribuition);
-  log(attribuition);
 }
 
 var vNameValue = getCookieValues(data.vName)[0];
@@ -178,27 +176,6 @@ return {utm_source: vNameValue.utm_source + '/'+ attribuition.utm_source};
 ___WEB_PERMISSIONS___
 
 [
-  {
-    "instance": {
-      "key": {
-        "publicId": "logging",
-        "versionId": "1"
-      },
-      "param": [
-        {
-          "key": "environments",
-          "value": {
-            "type": 1,
-            "string": "debug"
-          }
-        }
-      ]
-    },
-    "clientAnnotations": {
-      "isEditedByUser": true
-    },
-    "isRequired": true
-  },
   {
     "instance": {
       "key": {
