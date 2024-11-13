@@ -113,7 +113,7 @@ var attribuition = function() {
   var clids = searchKeys(search).filter(function(item) { if(item.indexOf('gclid') > -1){return item; } });
   if (clids.length > 0) {
     return JSONZ.stringify({utm_source:'google', utm_medium:'cpc'});
-  }
+  };
 
   var _utms = {};
   var utms = searchKeys(search).filter(function(item) {
