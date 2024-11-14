@@ -16,7 +16,7 @@ homepage: "https://metricaz.com/"
 documentation: "https://metricaz.com/contato/"
 versions:
 # Latest version
-  - sha: eb4a831f315962ac2c784959db4badf807ea88b2
+  - sha: 057c564931e076dbcafb7ed3a9107c59047f3df6
     changeNotes: Update 10.2 - Stable version with get utm rule fixed
 # Older versions
   - sha: 4f03949484675b8af8d472149bfc2927fa6ec91a
